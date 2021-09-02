@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>郵便番号検索</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/reset.css">
+</head>
+
+<body>
+    <h1>郵便番号から住所検索</h1> 
+
+    <label>郵便番号
+        <input type="text" id="postcode" maxlength="7" placeholder="ex)0040064">
+    </label>
+
+    <button id="btn">検索</button>
+
+
+    <div id="result">
+    <h2>検索結果</h2>
+        <p>
+            <label>都道府県
+                <input type="text" id="pref" size="6">
+            </label>
+        </p>
+
+        <p>
+            <label>市区町村
+                <input type="text" id="city">
+            </label>
+        </p>
+
+        <p>
+            <label>住所
+                <input type="text" id="address">
+            </label>
+        </p>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(function(){
+        $('#btn').on('click', () => {
+            $.ajax({
+            url: "http://zipcloud.ibsnet.co.jp/api/search?zipcode=" + $('#postcode').val(),
+            dataType: 'jsonp',
+            }).done((data) => {
+            if (data.results) { 
+                getData(data.results[0]);
+            } else {
+                alert('該当データが見つかりません');
+            }
+            }).fail((data) => {
+            alert('通信に失敗しました');
+            });
+        });
+
+        function getData(data) {
+            $('#pref').val(data.address1);
+            $('#city').val(data.address2);
+            $('#address').val(data.address3);
+        }
+        });
+        </script>
+</body>
+</html>
